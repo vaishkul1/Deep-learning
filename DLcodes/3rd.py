@@ -4,6 +4,8 @@ from keras.layers import Dense , Conv2D , Dropout , Flatten , MaxPooling2D
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+
+#A.  Loading and preprocessing the image data
 mnist = tf.keras.datasets.mnist
 (x_train,y_train),(x_test,y_test) = mnist.load_data() 
 input_shape = (28,28,1)
@@ -18,7 +20,7 @@ x_test =  x_test.astype('float32')
 x_train = x_train / 255
 x_test = x_test / 255
 
-print("Shape of traning :", x_train.shape)
+#B. Defining the model’s architecture
 
 model = Sequential([
     Conv2D(32, (3, 3), activation="relu", input_shape=(28, 28, 1)),
@@ -34,12 +36,26 @@ model.compile(
     metrics=["accuracy"]
 )
 
+#c. tarining model
 model.summary()
 model.fit(x_train, y_train, epochs=3, batch_size = 32)
 
+
+#D. Estimating the model’s performance
 test_loss , test_acc = model.evaluate(x_test,y_test)
 print("Loss%.3f" %test_loss)
 print("Accuracy%.3f" %test_acc)
+
+# Showing img at position[] from dataset
+image = x_train[0]
+plt.imshow(np.squeeze(image),cmap='gray')
+plt.show()
+
+image = image.reshape(1,image.shape[0],image.shape[1],image.shape[2])
+predict_model = model.predict([image])
+print("Predicted Class:{}" .format(np.argmax(predict_model)))
+
+
 
 # Showing img at position[] from dataset
 predictions = np.argmax(model.predict(X_test), axis=-1)
